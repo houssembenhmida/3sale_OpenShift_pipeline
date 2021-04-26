@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: 3scale-pipelinerun-
+spec:
+  # serviceAccountName: pipeline
+  # params:
+  #   - name: APP_GIT_URL
+  #     value: 'https://github.com/ucmcdbs/tars-portal.git'
+  #   - name: APP_GIT_REVISION
+  #     value: smartek-cicd
+  #     # value: master
+  #   - name: APPLICATION_DIR
+  #     value: workspace
+  pipelineRef:
+    name: 3scale-pipeline
+  # workspaces:
+  # - name: app-source
+  #   persistentVolumeClaim:
+  #     claimName: app-source-pvc
+  # - name: gradle-cache
+  #   persistentVolumeClaim:
+  #     claimName: gradle-cache-pvc
+  # resources:
+  # - name: image
+  #   resourceRef:
+  #     name: liferay-dxp-image-resource

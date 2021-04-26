@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: 3scale-task
+spec:
+  # workspaces:
+  #   - name: source
+  #   - name: gradle-cache
+  # params:
+  #   - name: GOALS
+  #     description: gradle goals to run
+  #     type: array
+  #     default:
+  #       - "clean"
+  #       - "build"
+  #   - name: APPLICATION_DIR
+  #     description: application directory
+  #     type: string
+  #     default: .
+  steps:
+    - name: 3scale export
+      image: registry.redhat.io/3scale-amp2/toolbox-rhel7:1.5.0
+      workingDir: $(workspaces.source.path)/$(params.APPLICATION_DIR)
+      script: |
+        #!/usr/bin/env bash
+        3scale remote add 3scale-src "https://3scale-admin.apps.ocp4.example.com"
+        3scale remote add 3scale-dest "https://3scale-admin.apps.ocp4.example.com"
+        3scale product export -f /tmp/api.yaml 3scale-src test_api
+        cat /tmp/api.yaml
+      # securityContext:
+      #   runAsUser: 0

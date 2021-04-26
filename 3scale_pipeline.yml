@@ -1,0 +1,44 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 3scale-pipeline
+spec:
+  # workspaces:
+  # - name: app-source
+  # - name: gradle-cache
+  # params:
+  # - name: APP_GIT_URL
+  #   type: string
+  #   description: The application git repository url
+  # - name: APP_GIT_REVISION
+  #   type: string
+  #   default: master
+  #   description: The application git repository revision
+  # - name: APPLICATION_DIR
+  #   description: application directory
+  #   type: string
+  #   default: .
+  # - name: GOALS
+  #   description: gradle goals to run
+  #   type: array
+  #   default:
+  #     - "clean"
+  #     - "build"
+  # resources:
+  # - name: image
+  #   type: image
+  tasks:
+  - name: 3scale-task
+    taskRef:
+      name: 3scale-task
+      # kind: ClusterTask
+    # params:
+    # - name: url
+    #   value: $(params.APP_GIT_URL)
+    # - name: revision
+    #   value: $(params.APP_GIT_REVISION)
+    # - name: deleteExisting
+    #   value: "true"
+    # workspaces:
+    # - name: output
+    #   workspace: app-source
