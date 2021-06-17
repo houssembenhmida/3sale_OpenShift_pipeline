@@ -24,9 +24,9 @@ spec:
    #   workingdir: $(workspaces.source.path)/$(params.application_dir)
       script: |
         #!/usr/bin/env bash
-        3scale remote add 3scale-src "http://8c00b1d8143f2894418866dcef7e5af0486e6b397be7ecc64b36fb3c0fbbca11@3scale-admin.apps.ocp4.example.com"
-        3scale service list 3scale-src
-        3scale product export -f /tmp/api.yaml 3scale-src test_api
+        3scale remote add -k 3scale-instance https://c52764ac4cf73158758a319371289a6a79f0fbc425c7d14f3ad1580cb3afe0f7@3scale-admin.apps.ocp4.example.com
+        3scale service list -k 3scale-instance
+        3scale product export -k -f /tmp/api.yaml 3scale-instance hello_world_product
         cat /tmp/api.yaml
       # securitycontext:
       #   runasuser: 08c00b1d8143f2894418866dcef7e5af0486e6b397be7ecc64b36fb3c0fbbca11Untitled Document 1
