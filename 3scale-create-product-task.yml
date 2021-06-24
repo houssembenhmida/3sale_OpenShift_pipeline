@@ -1,0 +1,53 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: 3scale-create-product
+spec:
+  # workspaces:
+  #   - name: source
+  #   - name: gradle-cache
+  params:
+    # - name: 3scale_source_secret_name
+    #   description: 3scale source secret
+    #   type: string
+    #   default: "3scale-source-secret"
+    - name: 3scale_destination_secret_name
+      description: 3scale destination secret
+      type: string
+      default: "3scale-destinantion-secret"
+    - name: product_configMap
+      description: product configMap name
+      type: string
+      default: "product-config"
+  volumes:
+  - name: "config_vol"
+    configMap:
+      name: "$(params.product_configMap)"
+  steps:
+    - name: 3scale-export
+      image: quay.io/redhat/3scale-toolbox
+      volumeMounts:
+        - name: "config_vol"
+          mountPath: /tmp/3scale
+      env:
+        # - name: 3SCALE_SOURCE_URL
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: $(params.3scale_source_secret_name)
+        #       key: URL
+        - name: 3SCALE_DESTINATION_URL
+          valueFrom:
+            secretKeyRef:
+              name: $(params.3scale_destination_secret_name)
+              key: URL
+        # - name: TEST_DATA
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: config-for-testing-configmaps
+        #       key: test.data
+      script: |
+        #!/usr/bin/env bash
+        3scale remote add -k 3scale-destination $3SCALE_DESTINATION_URL
+        3scale service list -k 3scale-destination
+        ls -al /tmp/3scale
+        3scale product import -k -f /tmp/3scale/product.yaml 3scale-destination

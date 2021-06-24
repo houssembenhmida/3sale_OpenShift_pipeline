@@ -6,39 +6,45 @@ spec:
   # workspaces:
   # - name: app-source
   # - name: gradle-cache
-  # params:
-  # - name: APP_GIT_URL
-  #   type: string
-  #   description: The application git repository url
-  # - name: APP_GIT_REVISION
-  #   type: string
-  #   default: master
-  #   description: The application git repository revision
-  # - name: APPLICATION_DIR
-  #   description: application directory
-  #   type: string
-  #   default: .
-  # - name: GOALS
-  #   description: gradle goals to run
-  #   type: array
-  #   default:
-  #     - "clean"
-  #     - "build"
-  # resources:
-  # - name: image
-  #   type: image
+  params:
+  - name: 3scale_source_secret_name
+    description: 3scale source secret
+    type: string
+    default: "3scale-source-secret"
+  - name: 3scale_destination_secret_name
+    description: 3scale destination secret
+    type: string
+    default: "3scale-destinantion-secret"
+  - name: 3scale_product_name
+    description: 3scale product name
+    type: string
+    default: "hello_world_product"
+  - name: 3scale_application_name
+    description: 3scale application name
+    type: string
+    default: "hello_world_application"
+  - name: application_configMap_name
+    description: application configMap name
+    type: string
+    default: "application-config"
   tasks:
-  - name: 3scale-task
+  - name: copy-product
     taskRef:
-      name: 3scale-task
-      # kind: ClusterTask
-    # params:
-    # - name: url
-    #   value: $(params.APP_GIT_URL)
-    # - name: revision
-    #   value: $(params.APP_GIT_REVISION)
-    # - name: deleteExisting
-    #   value: "true"
-    # workspaces:
-    # - name: output
-    #   workspace: app-source
+      name: 3scale-copy-product
+    params:
+    - name: 3scale_source_secret_name
+      value: $(params.3scale_source_secret_name)
+    - name: 3scale_destination_secret_name
+      value: $(params.3scale_destination_secret_name)
+    - name: 3scale_product_name
+      value: $(params.3scale_product_name)
+  - name: create-application
+    taskRef:
+      name: 3scale-create-application
+    params:
+    - name: 3scale_destination_secret_name
+      value: $(params.3scale_destination_secret_name)
+    - name: 3scale_application_name
+      value: $(params.3scale_application_name)
+    - name: application_configMap
+      value: $(params.application_configMap_name)

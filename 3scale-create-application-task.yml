@@ -1,0 +1,53 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: 3scale-create-application
+spec:
+  params:
+    - name: 3scale_destination_secret_name
+      description: 3scale destination secret
+      type: string
+      default: "3scale-destinantion-secret"
+    - name: 3scale_application_name
+      description: 3scale application name
+      type: string
+    - name: application_configMap
+      description: application configMap name
+      type: string
+      default: "application-config"
+  volumes:
+  - name: "config_vol"
+    configMap:
+      name: "$(params.application_configMap)"
+  steps:
+    - name: 3scale-export
+      image: quay.io/redhat/3scale-toolbox
+      volumeMounts:
+        - name: "config_vol"
+          mountPath: /tmp/3scale
+      env:
+        - name: 3SCALE_DESTINATION_URL
+          valueFrom:
+            secretKeyRef:
+              name: $(params.3scale_destination_secret_name)
+              key: URL
+        - name: ACCOUNT
+          valueFrom:
+            configMapKeyRef:
+              name: $(params.application_configMap)
+              key: account
+        - name: SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: $(params.application_configMap)
+              key: service
+        - name: APP_PLAN
+          valueFrom:
+            configMapKeyRef:
+              name: $(params.application_configMap)
+              key: application_plan
+      script: |
+        #!/usr/bin/env bash
+        3scale remote add -k 3scale-destination $3SCALE_DESTINATION_URL
+        3scale service list -k 3scale-destination
+        3scale application create -k 3scale-destination $ACCOUNT $SERVICE $APP_PLAN $(params.3scale_application_name)

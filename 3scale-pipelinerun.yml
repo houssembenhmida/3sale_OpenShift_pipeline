@@ -4,14 +4,24 @@ metadata:
   generateName: 3scale-pipelinerun-
 spec:
   # serviceAccountName: pipeline
-  # params:
-  #   - name: APP_GIT_URL
-  #     value: 'https://github.com/ucmcdbs/tars-portal.git'
-  #   - name: APP_GIT_REVISION
-  #     value: smartek-cicd
-  #     # value: master
-  #   - name: APPLICATION_DIR
-  #     value: workspace
+  params:
+    - name: APP_GIT_URL
+      value: 'https://github.com/ucmcdbs/tars-portal.git'
+    - name: APP_GIT_REVISION
+      value: smartek-cicd
+      # value: master
+    - name: APPLICATION_DIR
+      value: workspace
+    - name: 3scale_source_secret_name
+      value: 3scale-source-secret
+    - name: 3scale_destination_secret_name
+      value: 3scale-destination-secret
+    - name: 3scale_product_name
+      value: hello_world_product
+    - name: 3scale_application_name
+      value: hello_world_application
+    - name: application_configMap_name
+      value: application-config
   pipelineRef:
     name: 3scale-pipeline
   # workspaces:
