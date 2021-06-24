@@ -19,6 +19,7 @@ spec:
   steps:
     - name: 3scale-export
       image: quay.io/redhat/3scale-toolbox
+      env:
         - name: 3SCALE_SOURCE_URL
           valueFrom:
             secretKeyRef:
